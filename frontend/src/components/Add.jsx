@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../app/features/product/productSlice";
 import { setMessage } from "../app/features/message/messageSlice";
+import AdminSideNav from "./AdminSideNav";
 
 export default function Add() {
   const {
@@ -44,7 +45,11 @@ export default function Add() {
     }
   };
   return (
-    <div className="w-full ">
+    <div className="w-full flex">
+      <div>
+        <AdminSideNav />
+      </div>
+
       <form
         className="lg:w-[60%] m-auto p-4 flex flex-col justify-center items-center  "
         onSubmit={handleSubmit(onSubmit)}

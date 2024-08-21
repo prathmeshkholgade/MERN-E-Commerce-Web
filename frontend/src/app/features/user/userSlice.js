@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const authUrl = import.meta.env.VITE_AUTH;
-
+const baseUrl = import.meta.env.VITE_BASEURL;
 export const logInUser = createAsyncThunk(
   "user/login",
   async (data, thunkAPI) => {
@@ -13,7 +13,8 @@ export const logInUser = createAsyncThunk(
       return res.data;
     } catch (err) {
       console.log(err);
-      return thunkAPI.rejectWithValue(err.response.data);
+      const errResponse = err.response?.data || err.message;
+      return thunkAPI.rejectWithValue(errResponse);
     }
   }
 );
@@ -64,6 +65,22 @@ export const getUserData = createAsyncThunk(
     }
   }
 );
+
+export const addAddressDetails = createAsyncThunk(
+  "user/address",
+  async (data, thunkAPI) => {
+    try {
+      const add = await axios.post(`${baseUrl}/address`, data, {
+        withCredentials: true,
+      });
+      thunkAPI.dispatch(getUserData());
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "User",
   initialState: {
@@ -85,7 +102,8 @@ const userSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.User = action.payload;
-      });
+      })
+      .addCase(addAddressDetails.fulfilled, (state, action) => {});
   },
 });
 

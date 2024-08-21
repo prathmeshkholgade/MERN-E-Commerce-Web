@@ -8,19 +8,18 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.sigleProduct = async (req, res) => {
-  console.log(req.params);
   const product = await Product.findById(req.params.id).populate({
     path: "reviews",
     populate: { path: "owner", select: "fullName" },
   });
-
   res.status(200).json({ product: product });
 };
 
 module.exports.updateProduct = async (req, res) => {
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
-    req.body
+    req.body,
+    { new: true }
   );
   await updatedProduct.save();
   res.status(200).json(updatedProduct);
@@ -43,21 +42,15 @@ module.exports.createProduct = async (req, res) => {
   }));
   const newProduct = new Product(data);
   newProduct.image = images;
-  console.log(newProduct);
   await newProduct.save();
   res.status(200).json(newProduct);
 };
 
-
 module.exports.similarProduct = async (req, res) => {
   const { category, id } = req.params;
-  console.log(req.params);
   let similar = await Product.find({ category: category });
   similar = similar.filter((product) => {
     return product.id !== id;
   });
   res.status(200).json(similar);
 };
-
-
-

@@ -15,11 +15,12 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       await dispatch(logInUser(data)).unwrap();
       navigate("/");
-      console.log(data);
     } catch (err) {
+      console.log(err);
       setError("root", {
         type: "manual",
         message: err || "an error occurred",
@@ -27,7 +28,6 @@ export default function Login() {
       setTimeout(() => {
         clearErrors("root");
       }, 5000);
-      console.log(err);
     }
   };
 

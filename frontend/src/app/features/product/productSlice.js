@@ -103,6 +103,26 @@ export const addToCart = createAsyncThunk(
     }
   }
 );
+export const updateCartQuantity = createAsyncThunk(
+  "product/updateCartQuantity",
+  async ({ id, quantity }, thunkAPI) => {
+    try {
+      console.log(quantity);
+      const res = await axios.put(
+        `${cartURL}/${id}`,
+        { quantity: quantity },
+        {
+          withCredentials: true,
+        }
+      );
+      thunkAPI.dispatch(getUserData());
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
 
 export const deleteFromCart = createAsyncThunk(
   "product/deleteFromCart",
@@ -137,7 +157,21 @@ export const searchProducts = createAsyncThunk(
   "product/searchProduct",
   async (search, thunkAPI) => {
     try {
-      const res = await axios.get(`${productUrl}/search?search=${search}`, {
+      const res = await axios.get(`${productUrl}/search?q=${search}`, {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+export const searchResults = createAsyncThunk(
+  "product/searchResults",
+  async (search, thunkAPI) => {
+    try {
+      const res = await axios.get(`${productUrl}/search?q=${search}`, {
         withCredentials: true,
       });
       return res.data;
@@ -153,6 +187,7 @@ const productSlice = createSlice({
   initialState: {
     Products: [],
     searchProducts: [],
+    searchResults: [],
     Product: null,
     similarProduct: [],
     status: null,
@@ -213,6 +248,12 @@ const productSlice = createSlice({
       })
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.searchProducts = action.payload;
+      })
+      .addCase(searchResults.fulfilled, (state, action) => {
+        state.searchResults = action.payload;
+      })
+      .addCase(updateCartQuantity.fulfilled, (state, action) => {
+        state.status = "success";
       });
   },
 });

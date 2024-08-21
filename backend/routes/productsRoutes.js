@@ -12,7 +12,7 @@ router.get("/", wrapAsync(productController.index));
 router.get(
   "/search",
   wrapAsync(async (req, res) => {
-    const searchFiled = req.query.search;
+    const searchFiled = req.query.q;
     if (searchFiled === "") {
       res.send([]);
     } else {

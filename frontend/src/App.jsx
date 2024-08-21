@@ -7,6 +7,14 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ProductDetails from "./components/ProductDetails";
 import CartContainer from "./components/CartContainer";
+import SearchResultsPage from "./components/SearchResultsPage";
+import CheckOut from "./components/CheckOut";
+import Protected from "./components/Protected";
+import UserProvider from "./components/UserProvider";
+import PaymentSuccess from "./components/PaymentSuccess";
+import OrdersDetails from "./components/OrdersDetails";
+import AdminPage from "./components/AdminPage";
+import TotalOrders from "./components/TotalOrders";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -14,10 +22,40 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Body /> },
       { path: "/products/:id", element: <ProductDetails /> },
-      { path: "/add", element: <Add /> },
+      { path: "/search", element: <SearchResultsPage /> },
+      {
+        path: "/add",
+        element: (
+          <Protected adminOnly={true}>
+            {" "}
+            <Add />
+          </Protected>
+        ),
+      },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
       { path: "/cart", element: <CartContainer /> },
+      { path: "/paymentsuccess", element: <PaymentSuccess /> },
+      { path: "/myorder", element: <OrdersDetails /> },
+      { path: "/orders", element: <TotalOrders /> },
+      {
+        path: "/admin",
+        element: (
+          <Protected adminOnly={true}>
+            {" "}
+            <AdminPage />
+          </Protected>
+        ),
+      },
+      {
+        path: "/checkout",
+        element: (
+          <Protected>
+            {" "}
+            <CheckOut />{" "}
+          </Protected>
+        ),
+      },
     ],
   },
 ]);

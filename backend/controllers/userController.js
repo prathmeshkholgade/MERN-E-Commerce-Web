@@ -14,7 +14,6 @@ module.exports.registerUser = async (req, res, next) => {
       try {
         const user = new User({ fullName, email, password: hash });
         const token = generateToken(user);
-        console.log(token);
         res.cookie("token", token);
         await user.save();
         const { password, ...userInfo } = user.toObject();
@@ -29,7 +28,6 @@ module.exports.registerUser = async (req, res, next) => {
 module.exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email }).populate("cart.product");
-  console.log(user);
   if (!user) return next(new ExpressError(500, "email or password invalid"));
   bcrypt.compare(password, user.password, function (err, result) {
     if (result) {
@@ -37,8 +35,6 @@ module.exports.loginUser = async (req, res, next) => {
       res.cookie("token", token);
       const { password, ...userInfo } = user.toObject();
       req.user = userInfo;
-      console.log("this is user info");
-      console.log(req.user);
       res.status(200).json({ user: userInfo });
     } else {
       next(new ExpressError(500, "email or password invalid"));

@@ -7,6 +7,7 @@ import img2 from "../imgs/img2.jpg";
 import img3 from "../imgs/img3.jpg";
 import Carousel2 from "./Carousel2";
 import ProductContainer from "./ProductContainer";
+import NewProductContainer from "./NewProductContainer";
 
 export default function Body() {
   const imgs = [img1, img4, img2, img3];

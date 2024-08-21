@@ -24,6 +24,7 @@ export default function ProductDetails() {
     ? Product?.reviews
     : Product?.reviews.slice(0, initialReviewCount);
   const [currimg, setcurrimg] = useState(0);
+  const finalPrice = Math.floor(Product?.price * 0.9);
   const increaseCount = () => {
     setcartitemNum((prevNum) => prevNum + 1);
   };
@@ -57,6 +58,7 @@ export default function ProductDetails() {
       );
     }
   };
+
   useEffect(() => {
     getData();
   }, [id, dispatch]);
@@ -96,33 +98,25 @@ export default function ProductDetails() {
                 <h2 className="text-4xl font-semibold">{Product.name}</h2>
                 <p className="text-xl py-2">{Product.description}</p>
                 <div className="flex gap-4">
-                  <p className="font-medium text-lg">
-                    {" "}
-                    &#8377;{Math.floor(Product.price * 0.9)}
-                  </p>{" "}
+                  <p className="font-medium text-lg"> &#8377;{finalPrice}</p>{" "}
                   <p className="line-through text-zinc-600">
-                    {" "}
                     &#8377;{Product.price}
                   </p>
                 </div>
               </div>
               <div className="btn  flex py-4 gap-8">
-                <div className="bg-[#F0F0F0] text-center py-2 w-28  rounded-full flex justify-evenly ">
-                  <i
-                    className="ri-subtract-fill text-lg"
-                    onClick={decreaseCount}
-                  ></i>{" "}
-                  <p>{cartItemNum}</p>{" "}
-                  <i
-                    className="ri-add-line text-lg"
-                    onClick={increaseCount}
-                  ></i>
+                <div>
+                  <button className="bg-orange-400 text-white font-semibold h-full sm:w-44 rounded-full p-2 px-8 hover:bg-amber-500 hover:font-bold">
+                    Buy Now{" "}
+                  </button>
                 </div>
                 <p
                   onClick={addCartItem}
-                  className="bg-zinc-900 hover:bg-zinc-100 hover:border hover:border-zinc-400 hover:text-black text-white p-2 w-48 text-center rounded-full"
+                  className="bg-[#332E3C] hover:bg-zinc-100 hover:border hover:border-zinc-400 hover:text-black text-white py-2 sm:w-48 text-center rounded-full group px-4"
                 >
-                  Add to Cart
+                  {" "}
+                  <i className="ri-shopping-cart-line text-xl text-white px-2 group-hover:text-black "></i>
+                  <span className=" font-semibold"> Add to Cart </span>
                 </p>
               </div>
             </div>

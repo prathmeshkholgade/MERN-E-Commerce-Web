@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allProducts } from "../app/features/product/productSlice";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
+import NewProducts from "./NewProducts";
 export default function ProductContainer() {
   const dispatch = useDispatch();
   const AllProducts = useSelector((state) => state.Product.Products);
   const loadData = async () => {
     dispatch(allProducts());
   };
-  useState(() => {
+  useEffect(() => {
     loadData();
   }, []);
   return (
