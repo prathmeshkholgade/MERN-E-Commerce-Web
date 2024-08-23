@@ -22,7 +22,6 @@ export default function Protected({ children, adminOnly = false }) {
     getUser();
   }, [dispatch]);
 
-  console.log(user);
   if (loading) {
     return <div>Loading...</div>;
   }

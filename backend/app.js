@@ -14,10 +14,17 @@ const Razorpay = require("razorpay");
 const wrapAsync = require("./utils/wrapAsync");
 const crypto = require("crypto");
 const Order = require("./models/orderModel");
+// const { default: items } = require("razorpay/dist/types/items");
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors(corsOptions));
 app.use(cookieParse());
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
@@ -33,11 +40,13 @@ const instance = new Razorpay({
 app.post(
   "/payment/checkout",
   wrapAsync(async (req, res) => {
-    const { amount, products, address, userId, quantity } = req.body;
+    const { amount, products, address, userId, quantity, price } = req.body;
     const product = products.map((item) => ({
       products: item.productId,
       quantity: item.quantity,
+      sellingPrice: item.sellingPrice,
     }));
+
     console.log("this is map product", product);
     console.log(req.body);
     const newOrder = new Order({
@@ -47,6 +56,7 @@ app.post(
       totalPrice: amount,
       quantity: quantity,
     });
+    console.log(newOrder);
     console.log("this is product data", products);
     const options = {
       amount: amount * 100, // amount in the smallest currency unit
@@ -78,9 +88,14 @@ app.post(
       order.paymentInfo.signature = razorpay_signature;
       order.paymentInfo.paymentId = razorpay_payment_id;
       await order.save();
-      res.redirect(
-        `http://localhost:5173/paymentsuccess?reference=${razorpay_payment_id}`
-      );
+      res.status(200).json({
+        success: true,
+        message: "Payment verified successfully",
+        reference: razorpay_payment_id,
+      });
+      // res.redirect(
+      //   `http://localhost:5173/paymentsuccess?reference=${razorpay_payment_id}`
+      // );
     } else {
       res.status(400).json({ success: false });
     }
@@ -111,11 +126,18 @@ app.get(
     res.status(200).json({ success: true, orders });
   })
 );
+app.options("*", cors(corsOptions));
 
 app.use((err, req, res, next) => {
   let { status = 500, message = "something went wrong" } = err;
   res.status(status).send(message);
 });
+
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   next();
+// });
 
 app.listen(8080, () => {
   console.log("server is listing to port 8080");

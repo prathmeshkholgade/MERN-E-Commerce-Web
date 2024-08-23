@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   addToCart,
   fetchSingleProduct,
@@ -11,6 +11,7 @@ import ReviewCard from "./ReviewCard";
 import "../rating.css";
 import { setMessage } from "../app/features/message/messageSlice";
 import SimilarProduct from "./SimilarProduct";
+import { setCheckOutProducts } from "../app/features/order/CheckOutSlice";
 export default function ProductDetails() {
   const { id } = useParams();
   const user = useSelector((state) => state.User.User);
@@ -37,6 +38,7 @@ export default function ProductDetails() {
       }
     });
   };
+
   const addCartItem = async () => {
     try {
       await dispatch(addToCart({ id, quantity: cartItemNum })).unwrap();
@@ -48,6 +50,7 @@ export default function ProductDetails() {
       navigate("/login");
     }
   };
+
   const getData = async () => {
     await dispatch(fetchSingleProduct(id));
   };
@@ -57,6 +60,11 @@ export default function ProductDetails() {
         similarProduct({ id: Product._id, category: Product?.category })
       );
     }
+  };
+  const handleChekout = () => {
+    console.log(Product);
+    dispatch(setCheckOutProducts([{ product: Product, quantity: 1 }]));
+    navigate("/checkout");
   };
 
   useEffect(() => {
@@ -98,7 +106,10 @@ export default function ProductDetails() {
                 <h2 className="text-4xl font-semibold">{Product.name}</h2>
                 <p className="text-xl py-2">{Product.description}</p>
                 <div className="flex gap-4">
-                  <p className="font-medium text-lg"> &#8377;{finalPrice}</p>{" "}
+                  <p className="font-medium text-lg">
+                    {" "}
+                    &#8377;{Product.sellingPrice}
+                  </p>{" "}
                   <p className="line-through text-zinc-600">
                     &#8377;{Product.price}
                   </p>
@@ -106,9 +117,12 @@ export default function ProductDetails() {
               </div>
               <div className="btn  flex py-4 gap-8">
                 <div>
-                  <button className="bg-orange-400 text-white font-semibold h-full sm:w-44 rounded-full p-2 px-8 hover:bg-amber-500 hover:font-bold">
+                  <button
+                    onClick={handleChekout}
+                    className="bg-orange-400 text-white font-semibold h-full sm:w-44 rounded-full p-2 px-8 hover:bg-amber-500 hover:font-bold"
+                  >
                     Buy Now{" "}
-                  </button>
+                  </button>{" "}
                 </div>
                 <p
                   onClick={addCartItem}

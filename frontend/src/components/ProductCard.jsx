@@ -21,8 +21,11 @@ export default function ProductCard({ product }) {
             <div className="px-2 relative">
               <p className="py-2">{product.name}</p>
               <div className="flex gap-4">
-              <p className="font-medium"> &#8377;{Math.floor(product.price * 0.9)}</p>
-              <p className="line-through text-zinc-600"> &#8377;{product.price}</p>
+                <p className="font-medium"> {product.sellingPrice}</p>
+                <p className="line-through text-zinc-600">
+                  {" "}
+                  &#8377;{product.price}
+                </p>
               </div>
             </div>
           </Link>

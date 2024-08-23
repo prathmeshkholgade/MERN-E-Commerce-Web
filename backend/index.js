@@ -29,7 +29,7 @@ app.use("/address", addressRoutes);
 const addSellingPrice = async () => {
   const allproducts = await Product.find({});
   for (let item of allproducts) {
-    item.price = 18999;
+    item.sellingPrice = 15499;
     await item.save();
   }
 

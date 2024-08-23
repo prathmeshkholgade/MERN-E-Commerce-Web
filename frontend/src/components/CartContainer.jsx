@@ -12,13 +12,14 @@ export default function CartContainer() {
       (preV, currV) =>
         preV +
         (currV.product
-          ? Math.floor(currV.product?.price * 0.9 * currV.quantity)
+          ? Math.floor(currV.product?.sellingPrice * currV.quantity)
           : 0),
       0
     );
   const totalQuantity =
     carts && carts.reduce((preV, currV) => preV + currV.quantity, 0);
   console.log(carts);
+  console.log(itemsPrice, totalQuantity);
   return (
     <div className="w-[95%] mx-auto sm:py-4 sm:flex gap-12  ">
       {carts?.length > 0 ? (
@@ -28,7 +29,8 @@ export default function CartContainer() {
               <CartProduct cart={cart} />
             ))}
           </div>
-          <PriceDetails/>
+
+          <PriceDetails totalQuantity={totalQuantity} totalPrice={itemsPrice} />
         </>
       ) : (
         <>

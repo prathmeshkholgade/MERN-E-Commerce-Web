@@ -6,19 +6,19 @@ export default function OrderCard({ order }) {
   return (
     order && (
       <div className="bg-zinc-100 my-2">
-        <p className="p-2">OrderId : {order?.paymentInfo.orderId}</p>
+        <p className="">OrderId : {order?.paymentInfo.orderId}</p>
         <div className=" w-full flex justify-evenly mt-2">
           <div className=" flex flex-col  mt-2 w-[40%] ">
             {order.product.map((product) => (
               <Link to={`/products/${product.products._id}`}>
                 <div className="flex gap-6 p-2  w-full">
                   {" "}
-                  <div className="w-28">
+                  <div className="w-24">
                     <img src={product.products.image[0].url} alt="" />
                   </div>
                   <div>
                     <p>{product.products.name}</p>
-                    <p className="my-2">{product.products.price}</p>
+                    <p className="my-2">{product.sellingPrice}</p>
                     <p>QTY:{product.quantity}</p>
                   </div>
                 </div>

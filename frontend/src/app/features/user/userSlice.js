@@ -9,7 +9,7 @@ export const logInUser = createAsyncThunk(
       const res = await axios.post(`${authUrl}/login`, data, {
         withCredentials: true,
       });
-      console.log(res);
+
       return res.data;
     } catch (err) {
       console.log(err);
@@ -52,12 +52,11 @@ export const logOut = createAsyncThunk("user/logout", async (_, thunkAPI) => {
 });
 export const getUserData = createAsyncThunk(
   "user/getuser",
-  async (thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
       const res = await axios.get(`${authUrl}`, {
         withCredentials: true,
       });
-      console.log(res);
       return res.data.user;
     } catch (err) {
       console.log(err);

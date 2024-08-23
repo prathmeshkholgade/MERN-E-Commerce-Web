@@ -1,55 +1,59 @@
 import React, { useState } from "react";
 import Address from "./Address";
 import { useDispatch, useSelector } from "react-redux";
-import CartProduct from "./CartProduct";
 import PriceDetails from "./PriceDetails";
 import { useForm } from "react-hook-form";
-import AddressPopPup from "./AddressPopPup";
 import { createOrder } from "../app/features/order/orderSlice";
+import CheckOutProduct from "./CheckOutProduct";
 
 export default function CheckOut() {
   const { register, handleSubmit } = useForm();
-  const carts = useSelector((state) => state?.User?.User?.user?.cart);
+
   const address = useSelector((state) => state?.User?.User?.user?.address);
   const user = useSelector((state) => state?.User?.User?.user);
+  const checkOutProduct = useSelector((state) => state?.CheckOut?.Products);
+
   const [showAddForm, setshowAddForm] = useState(false);
   const disPatch = useDispatch();
+  console.log(checkOutProduct);
   const hoverShowForm = () => {
     setshowAddForm(!showAddForm);
   };
-  const totalAmount =
-    carts &&
-    carts.reduce(
-      (preV, currV) =>
-        preV +
-        (currV.product
-          ? Math.floor(currV.product?.price * 0.9 * currV.quantity)
-          : 0),
+
+  const totalPrice =
+    checkOutProduct &&
+    checkOutProduct.reduce(
+      (prev, currv) =>
+        prev +
+        (currv.product ? currv.product?.sellingPrice * currv.quantity : 0),
       0
     );
   const totalQuantity =
-    carts && carts.reduce((preV, currV) => preV + currV.quantity, 0);
+    checkOutProduct &&
+    checkOutProduct.reduce((preV, currV) => preV + currV.quantity, 0);
+  console.log(totalPrice);
 
   const placeOrder = async (data) => {
     try {
       console.log(data);
-      console.log(totalAmount);
+      // console.log(totalAmount);
       const selectedAddress = address.find((add) => add._id === data.address);
       const phoneNumber = selectedAddress.number;
-      const products = carts.map((product) => ({
+      const products = checkOutProduct.map((product) => ({
         productId: product.product._id,
         quantity: product.quantity,
+        sellingPrice: product.product.sellingPrice,
       }));
+
       const orderData = {
         address: data.address, // the selected address ID
-        amount: totalAmount, // total amount calculated
+        amount: totalPrice, // total amount calculated
         products: products,
         quantity: totalQuantity,
         userId: user._id,
+        // price: productPrice,
       };
-      carts.map((product) => {
-        console.log(product.product._id);
-      });
+
       const orderResponse = await disPatch(createOrder({ orderData })).unwrap();
       console.log(orderResponse);
 
@@ -59,7 +63,8 @@ export default function CheckOut() {
         currency: "INR",
         name: "Prathmesh Kholgade",
         description: "Test Transaction",
-        image: "https://example.com/your_logo",
+        image:
+          "https://avatars.githubusercontent.com/u/136920955?s=400&u=80febaa5887d0155235ff532a898e5a55624253f&v=4",
         order_id: orderResponse.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         callback_url: "http://localhost:8080/payment/verify",
         prefill: {
@@ -130,10 +135,11 @@ export default function CheckOut() {
         <hr />
         <div>
           <h3 className="text-xl font-semibold py-2">Product</h3>
-          {carts &&
-            carts.map((product, idx) => (
+          {checkOutProduct &&
+            checkOutProduct.map((product, idx) => (
               <div className="w-[90%] mx-auto">
-                <CartProduct cart={product} />
+                {/* <CartProduct cart={product} /> */}
+                {<CheckOutProduct product={product} />}
               </div>
             ))}
         </div>
@@ -151,10 +157,8 @@ export default function CheckOut() {
 
       <div className=" flex-grow">
         <div className=" flex justify-center ">
-          <PriceDetails />
+          <PriceDetails totalPrice={totalPrice} totalQuantity={totalQuantity} />
         </div>
-
-        {/* {carts&& carts.map((item,idx)=> <CartProduct cart={item} />)} */}
       </div>
     </div>
   );

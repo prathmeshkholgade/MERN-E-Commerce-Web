@@ -9,7 +9,6 @@ import {
 export default function CartProduct({ cart }) {
   const [cartItemNum, setcartitemNum] = useState(cart?.quantity);
   const dispatch = useDispatch();
-  const finalPrice = Math.floor(cart?.product.price * 0.9);
 
   const increaseCount = () => {
     setcartitemNum((prevNum) => prevNum + 1);
@@ -52,7 +51,7 @@ export default function CartProduct({ cart }) {
                 <div className="flex gap-4 py-2">
                   <p className="font-medium">
                     {" "}
-                    &#8377;{finalPrice * cartItemNum}
+                    &#8377;{cart.product.sellingPrice * cartItemNum}
                   </p>{" "}
                   <p className=" line-through"> {cart?.product?.price}</p>
                 </div>
