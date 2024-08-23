@@ -16,6 +16,21 @@ export const createOrder = createAsyncThunk(
     }
   }
 );
+export const handlePaymentVerification = createAsyncThunk(
+  "order/handleVerification",
+  async (paymentData, thunkAPI) => {
+    try {
+      const res = await axios.post(`${baseUrl}/payment/verify`, paymentData, {
+        withCredentials: true,
+      });
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
 
 export const orderDetails = createAsyncThunk(
   "orders/details",
@@ -71,6 +86,14 @@ const orderSlice = createSlice({
       })
       .addCase(totalOrder.fulfilled, (state, action) => {
         state.totalOrder = action.payload;
+      })
+      .addCase(handlePaymentVerification.fulfilled, (state, action) => {
+        state.paymentVerified = true;
+        state.error = null;
+      })
+      .addCase(handlePaymentVerification.rejected, (state, action) => {
+        state.paymentVerified = false;
+        state.error = action.payload;
       });
   },
 });

@@ -13,7 +13,7 @@ export default function OrderCard({ order }) {
               <Link to={`/products/${product.products._id}`}>
                 <div className="flex gap-6 p-2  w-full">
                   {" "}
-                  <div className="w-24">
+                  <div className="w-20">
                     <img src={product.products.image[0].url} alt="" />
                   </div>
                   <div>

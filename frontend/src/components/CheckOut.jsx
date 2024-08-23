@@ -3,8 +3,12 @@ import Address from "./Address";
 import { useDispatch, useSelector } from "react-redux";
 import PriceDetails from "./PriceDetails";
 import { useForm } from "react-hook-form";
-import { createOrder } from "../app/features/order/orderSlice";
+import {
+  createOrder,
+  handlePaymentVerification,
+} from "../app/features/order/orderSlice";
 import CheckOutProduct from "./CheckOutProduct";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckOut() {
   const { register, handleSubmit } = useForm();
@@ -12,7 +16,7 @@ export default function CheckOut() {
   const address = useSelector((state) => state?.User?.User?.user?.address);
   const user = useSelector((state) => state?.User?.User?.user);
   const checkOutProduct = useSelector((state) => state?.CheckOut?.Products);
-
+  const navigate = useNavigate();
   const [showAddForm, setshowAddForm] = useState(false);
   const disPatch = useDispatch();
   console.log(checkOutProduct);
@@ -66,7 +70,32 @@ export default function CheckOut() {
         image:
           "https://avatars.githubusercontent.com/u/136920955?s=400&u=80febaa5887d0155235ff532a898e5a55624253f&v=4",
         order_id: orderResponse.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-        callback_url: "http://localhost:8080/payment/verify",
+        // callback_url: "http://localhost:8080/payment/verify",
+        handler: async function (response) {
+          const paymentData = {
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+          };
+          try {
+            console.log(paymentData);
+
+            const verificationResponse = await disPatch(
+              handlePaymentVerification(paymentData)
+            ).unwrap();
+            console.log(verificationResponse);
+            if (verificationResponse.success) {
+              navigate(
+                `/paymentsuccess?reference=${verificationResponse.reference}`
+              );
+            } else {
+              navigate("/paymentfailure");
+            }
+          } catch (error) {
+            console.error("Payment verification failed:", error);
+            navigate("/paymentfailure");
+          }
+        },
         prefill: {
           name: user.fullName,
           email: user.email,
