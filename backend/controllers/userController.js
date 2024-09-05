@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 
 module.exports.registerUser = async (req, res, next) => {
   const { fullName, email, password, isAdmin } = req.body;
+  console.log(req.body);
   const alreadyUser = await User.findOne({ email: email });
   if (alreadyUser) return next(new ExpressError(500, "email is already exist"));
   bcrypt.genSalt(10, function (err, salt) {

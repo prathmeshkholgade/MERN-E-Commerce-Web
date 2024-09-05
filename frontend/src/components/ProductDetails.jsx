@@ -107,7 +107,7 @@ export default function ProductDetails() {
                 </div>
               </div>
               <div className="btn  flex flex-col  gap-4 ">
-                {user && isAdmin.isAdmin && (
+                {user && isAdmin?.isAdmin && (
                   <div>
                     <button
                       onClick={handleEdit}
