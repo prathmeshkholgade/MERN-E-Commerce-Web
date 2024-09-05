@@ -16,12 +16,25 @@ module.exports.sigleProduct = async (req, res) => {
 };
 
 module.exports.updateProduct = async (req, res) => {
-  const updatedProduct = await Product.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  console.log(req.params);
+  const files = req.files;
+  console.log(req.body);
+  const { image, ...other } = req.body;
+  const imgs = image ? JSON.parse(image) : [];
+  const updatedProduct = await Product.findByIdAndUpdate(req.params.id, other, {
+    new: true,
+  });
+  if (files && files.length > 0) {
+    const images = files.map((file) => ({
+      url: file.path,
+      fileName: file.filename,
+    }));
+    updatedProduct.image = images;
+  } else if (imgs && imgs.length > 0) {
+    updatedProduct.image = imgs;
+  }
   await updatedProduct.save();
+  console.log(updatedProduct);
   res.status(200).json(updatedProduct);
 };
 

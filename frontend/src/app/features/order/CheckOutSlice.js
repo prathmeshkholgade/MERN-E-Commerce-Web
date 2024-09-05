@@ -18,7 +18,7 @@ const checkOutSlice = createSlice({
 
       if (product) {
         product.quantity = quantity;
-        console.log("Updated Product:", product);
+        // console.log("Updated Product:", product);
       }
     },
   },

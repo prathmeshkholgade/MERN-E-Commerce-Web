@@ -15,6 +15,7 @@ import { setCheckOutProducts } from "../app/features/order/CheckOutSlice";
 export default function ProductDetails() {
   const { id } = useParams();
   const user = useSelector((state) => state.User.User);
+  const isAdmin = useSelector((state) => state?.User?.User?.user);
   const [cartItemNum, setcartitemNum] = useState(1);
   const [showReview, setshowReview] = useState(false);
   const [initialReviewCount, setInitialReviewCount] = useState(6);
@@ -25,19 +26,6 @@ export default function ProductDetails() {
     ? Product?.reviews
     : Product?.reviews.slice(0, initialReviewCount);
   const [currimg, setcurrimg] = useState(0);
-  const finalPrice = Math.floor(Product?.price * 0.9);
-  const increaseCount = () => {
-    setcartitemNum((prevNum) => prevNum + 1);
-  };
-  const decreaseCount = () => {
-    setcartitemNum((prevNum) => {
-      if (prevNum > 1) {
-        return prevNum - 1;
-      } else {
-        return 1;
-      }
-    });
-  };
 
   const addCartItem = async () => {
     try {
@@ -65,6 +53,9 @@ export default function ProductDetails() {
     console.log(Product);
     dispatch(setCheckOutProducts([{ product: Product, quantity: 1 }]));
     navigate("/checkout");
+  };
+  const handleEdit = () => {
+    navigate(`/products/edit/${Product._id}`);
   };
 
   useEffect(() => {
@@ -115,23 +106,37 @@ export default function ProductDetails() {
                   </p>
                 </div>
               </div>
-              <div className="btn  flex py-4 gap-8">
-                <div>
-                  <button
-                    onClick={handleChekout}
-                    className="bg-orange-400 text-white font-semibold h-full sm:w-44 rounded-full p-2 px-8 hover:bg-amber-500 hover:font-bold"
-                  >
-                    Buy Now{" "}
-                  </button>{" "}
+              <div className="btn  flex flex-col  gap-4 ">
+                {user && isAdmin.isAdmin && (
+                  <div>
+                    <button
+                      onClick={handleEdit}
+                      className="bg-red-500 px-6 rounded-lg py-2 text-white"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+                <div className="flex gap-8">
+                  <div>
+                    <button
+                      onClick={handleChekout}
+                      className="bg-orange-400 text-white font-semibold h-full sm:w-44 rounded-full p-2 px-8 hover:bg-amber-500 hover:font-bold"
+                    >
+                      Buy Now{" "}
+                    </button>{" "}
+                  </div>
+                  <div>
+                    <p
+                      onClick={addCartItem}
+                      className="bg-[#332E3C] hover:bg-zinc-100 hover:border hover:border-zinc-400 hover:text-black text-white py-2 sm:w-48 text-center rounded-full group px-4"
+                    >
+                      {" "}
+                      <i className="ri-shopping-cart-line text-xl text-white px-2 group-hover:text-black "></i>
+                      <span className=" font-semibold"> Add to Cart </span>
+                    </p>
+                  </div>
                 </div>
-                <p
-                  onClick={addCartItem}
-                  className="bg-[#332E3C] hover:bg-zinc-100 hover:border hover:border-zinc-400 hover:text-black text-white py-2 sm:w-48 text-center rounded-full group px-4"
-                >
-                  {" "}
-                  <i className="ri-shopping-cart-line text-xl text-white px-2 group-hover:text-black "></i>
-                  <span className=" font-semibold"> Add to Cart </span>
-                </p>
               </div>
             </div>
           </div>

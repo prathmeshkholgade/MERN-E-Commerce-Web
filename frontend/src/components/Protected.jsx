@@ -7,6 +7,7 @@ export default function Protected({ children, adminOnly = false }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [user, setuser] = useState();
+  
   const getUser = async () => {
     try {
       const res = await dispatch(getUserData()).unwrap();

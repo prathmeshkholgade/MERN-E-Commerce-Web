@@ -79,7 +79,22 @@ export const addProduct = createAsyncThunk(
       });
       return res.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.message);
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
+export const updateProductDetails = createAsyncThunk(
+  "product/update",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const res = await axios.put(`${productUrl}/${id}`, data, {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
     }
   }
 );
@@ -253,6 +268,9 @@ const productSlice = createSlice({
         state.searchResults = action.payload;
       })
       .addCase(updateCartQuantity.fulfilled, (state, action) => {
+        state.status = "success";
+      })
+      .addCase(updateProductDetails.fulfilled, (state, action) => {
         state.status = "success";
       });
   },

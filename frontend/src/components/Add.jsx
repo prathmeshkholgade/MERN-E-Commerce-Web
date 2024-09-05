@@ -14,12 +14,6 @@ export default function Add() {
     formState: { errors, isSubmitting },
   } = useForm();
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   if (errors) {
-  //     const timer = setTimeout(() => clearErrors(), 5000);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [errors, clearErrors]);
 
   const onSubmit = async (data) => {
     try {
@@ -30,6 +24,7 @@ export default function Add() {
       formData.append("name", data.name);
       formData.append("description", data.description);
       formData.append("price", data.price);
+      formData.append("sellingPrice", data.sellingPrice);
       formData.append("countInStock", data.countInStock);
       formData.append("category", data.category);
       const res = await dispatch(addProduct(formData)).unwrap();
@@ -49,7 +44,6 @@ export default function Add() {
       <div>
         <AdminSideNav />
       </div>
-
       <form
         className="lg:w-[60%] m-auto p-4 flex flex-col justify-center items-center  "
         onSubmit={handleSubmit(onSubmit)}
@@ -116,6 +110,23 @@ export default function Add() {
               })}
             />
             {errors.price && (
+              <p className="text-red-700">{errors.price.message}</p>
+            )}
+          </div>
+          <div className="sm:w-1/2">
+            <div>
+              <label htmlFor="price">Enter Selling Price</label>
+            </div>
+            <input
+              type="number"
+              placeholder="Enter Sellling Price"
+              id="price"
+              className="w-full rounded-lg   mt-2"
+              {...register("sellingPrice", {
+                required: { value: true, message: "Enter Selling Price" },
+              })}
+            />
+            {errors.sellingPrice && (
               <p className="text-red-700">{errors.price.message}</p>
             )}
           </div>

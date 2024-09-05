@@ -40,62 +40,72 @@ const instance = new Razorpay({
 app.post(
   "/payment/checkout",
   wrapAsync(async (req, res) => {
-    const { amount, products, address, userId, quantity, price } = req.body;
+    const { amount, products, address, userId, quantity } = req.body;
     const product = products.map((item) => ({
       products: item.productId,
       quantity: item.quantity,
       sellingPrice: item.sellingPrice,
     }));
-
-    console.log("this is map product", product);
-    console.log(req.body);
-    const newOrder = new Order({
-      user: userId,
-      product: product,
-      shippingAddress: address,
-      totalPrice: amount,
-      quantity: quantity,
-    });
-    console.log(newOrder);
     console.log("this is product data", products);
     const options = {
       amount: amount * 100, // amount in the smallest currency unit
       currency: "INR",
     };
     const order = await instance.orders.create(options);
-    newOrder.paymentInfo.orderId = order.id;
-    await newOrder.save();
-    res.status(200).json({ success: true, order });
+    console.log(order);
+    res.status(200).json({
+      success: true,
+      orderId: order.id,
+      orderDetails: {
+        user: userId,
+        product: product,
+        shippingAddress: address,
+        totalPrice: amount,
+        quantity: quantity,
+      },
+    });
   })
 );
 
 app.post(
   "/payment/verify",
   wrapAsync(async (req, res) => {
-    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
-      req.body;
+    const {
+      razorpay_payment_id,
+      razorpay_order_id,
+      razorpay_signature,
+      orderDetails,
+    } = req.body;
+    console.log("this is data");
+    console.log(orderDetails);
+    console.log(req.body);
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_SECRET)
       .update(body.toString())
       .digest("hex");
+    console.log(expectedSignature);
     const isAuthebticate = expectedSignature === razorpay_signature;
     if (isAuthebticate) {
-      const order = await Order.findOne({
-        "paymentInfo.orderId": razorpay_order_id,
+      const newOrder = new Order({
+        user: orderDetails.orderDetails.user,
+        product: orderDetails.orderDetails.product,
+        shippingAddress: orderDetails.orderDetails.shippingAddress,
+        totalPrice: orderDetails.orderDetails.totalPrice,
+        quantity: orderDetails.orderDetails.quantity,
+        isPaid: true,
+        paymentInfo: {
+          orderId: razorpay_order_id,
+          paymentId: razorpay_payment_id,
+          signature: razorpay_signature,
+        },
       });
-      order.isPaid = true;
-      order.paymentInfo.signature = razorpay_signature;
-      order.paymentInfo.paymentId = razorpay_payment_id;
-      await order.save();
+      await newOrder.save();
       res.status(200).json({
         success: true,
         message: "Payment verified successfully",
         reference: razorpay_payment_id,
       });
-      // res.redirect(
-      //   `http://localhost:5173/paymentsuccess?reference=${razorpay_payment_id}`
-      // );
     } else {
       res.status(400).json({ success: false });
     }
@@ -122,7 +132,6 @@ app.get(
       .populate("user")
       .populate("shippingAddress");
     console.log(orders);
-
     res.status(200).json({ success: true, orders });
   })
 );
@@ -132,12 +141,6 @@ app.use((err, req, res, next) => {
   let { status = 500, message = "something went wrong" } = err;
   res.status(status).send(message);
 });
-
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-//   res.header("Access-Control-Allow-Credentials", "true");
-//   next();
-// });
 
 app.listen(8080, () => {
   console.log("server is listing to port 8080");

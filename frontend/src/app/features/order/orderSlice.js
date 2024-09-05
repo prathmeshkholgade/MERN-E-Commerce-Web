@@ -65,8 +65,21 @@ const orderSlice = createSlice({
     loading: false,
     error: null,
     paymentVerified: false,
+    OrderInfo: null,
   },
-  reducers: {},
+  reducers: {
+    addOrder: (state, action) => {
+      const { id } = action.payload;
+      console.log(id);
+      if (state.totalOrder) {
+        const order = state.totalOrder?.orders.find(
+          (order) => order._id === id
+        );
+        console.log(order);
+        state.OrderInfo = order;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createOrder.pending, (state, action) => {
@@ -97,4 +110,5 @@ const orderSlice = createSlice({
       });
   },
 });
+export const { addOrder } = orderSlice.actions;
 export default orderSlice.reducer;

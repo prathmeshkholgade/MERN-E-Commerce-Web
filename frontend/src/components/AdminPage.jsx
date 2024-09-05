@@ -18,10 +18,10 @@ export default function AdminPage() {
   }, []);
   return (
     <div className="flex mt-8">
-      <div className=" bg-red-200 ">
+      <div className="">
         <AdminSideNav />
       </div>
-      <div className="bg-red-200 w-full flex flex-wrap gap-4 p-2">
+      <div className=" w-full flex flex-wrap gap-4 p-2">
         {AllProducts &&
           AllProducts.map((product) => (
             <>

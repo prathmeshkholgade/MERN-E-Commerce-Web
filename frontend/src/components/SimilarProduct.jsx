@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 export default function SimilarProduct() {
   const simiralProducts = useSelector((state) => state.Product.similarProduct);
   return (
+    simiralProducts &&
     simiralProducts.length > 0 && (
       <>
         <h2 className="px-8 text-2xl font-semibold py-2">

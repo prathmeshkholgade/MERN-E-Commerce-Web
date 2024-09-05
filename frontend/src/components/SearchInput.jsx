@@ -63,7 +63,7 @@ export default function SearchInput() {
           <i className="ri-search-2-line absolute right-9 sm:right-4 py-2 "></i>{" "}
         </button>
       </form>
-      {suggestionProducts.length > 0 && showSuggestion && (
+      {suggestionProducts && suggestionProducts.length > 0 && showSuggestion && (
         <div className="bg-zinc-100 max-h-96 w-full absolute p-4 overflow-hidden">
           {suggestionProducts.map((item, idx) => (
             <div

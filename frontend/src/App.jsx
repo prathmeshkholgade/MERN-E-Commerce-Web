@@ -15,6 +15,10 @@ import PaymentSuccess from "./components/PaymentSuccess";
 import OrdersDetails from "./components/OrdersDetails";
 import AdminPage from "./components/AdminPage";
 import TotalOrders from "./components/TotalOrders";
+
+import EditPage from "./components/EditPage";
+import OrderInfo from "./components/OrderInfo";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +26,15 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Body /> },
       { path: "/products/:id", element: <ProductDetails /> },
+      { path: "/order/:id", element: <OrderInfo /> },
+      {
+        path: "/products/edit/:id",
+        element: (
+          <Protected adminOnly={true}>
+            <EditPage />{" "}
+          </Protected>
+        ),
+      },
       { path: "/search", element: <SearchResultsPage /> },
       {
         path: "/add",
@@ -37,7 +50,14 @@ const router = createBrowserRouter([
       { path: "/cart", element: <CartContainer /> },
       { path: "/paymentsuccess", element: <PaymentSuccess /> },
       { path: "/myorder", element: <OrdersDetails /> },
-      { path: "/orders", element: <TotalOrders /> },
+      {
+        path: "/orders",
+        element: (
+          <Protected adminOnly={true}>
+            <TotalOrders />{" "}
+          </Protected>
+        ),
+      },
       {
         path: "/admin",
         element: (

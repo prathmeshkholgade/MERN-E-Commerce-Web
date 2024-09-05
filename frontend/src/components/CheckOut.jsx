@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {
   createOrder,
   handlePaymentVerification,
+  orderDetails,
 } from "../app/features/order/orderSlice";
 import CheckOutProduct from "./CheckOutProduct";
 import { useNavigate } from "react-router-dom";
@@ -63,23 +64,25 @@ export default function CheckOut() {
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY, // Enter the Key ID generated from the Dashboard
-        amount: orderResponse.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        amount: orderResponse.orderDetails.totalPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "Prathmesh Kholgade",
         description: "Test Transaction",
         image:
           "https://avatars.githubusercontent.com/u/136920955?s=400&u=80febaa5887d0155235ff532a898e5a55624253f&v=4",
-        order_id: orderResponse.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        order_id: orderResponse.orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         // callback_url: "http://localhost:8080/payment/verify",
         handler: async function (response) {
+          console.log("Razorpay response: ", response);
           const paymentData = {
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_order_id: response.razorpay_order_id,
             razorpay_signature: response.razorpay_signature,
+            orderDetails: orderResponse,
           };
+          console.log("Payment Data: ", paymentData);
           try {
             console.log(paymentData);
-
             const verificationResponse = await disPatch(
               handlePaymentVerification(paymentData)
             ).unwrap();

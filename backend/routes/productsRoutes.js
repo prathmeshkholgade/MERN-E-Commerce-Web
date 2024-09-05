@@ -28,7 +28,11 @@ router.get(
 );
 
 router.get("/:id", wrapAsync(productController.sigleProduct));
-router.put("/:id", wrapAsync(productController.updateProduct));
+router.put(
+  "/:id",
+  upload.array("img", 12),
+  wrapAsync(productController.updateProduct)
+);
 router.delete("/:id", wrapAsync(productController.deleteProduct));
 router.post(
   "/add",
