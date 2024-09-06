@@ -26,29 +26,7 @@ const corsOptions = {
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-const store = MongoStore.create({
-  mongoUrl: db_Url,
-  crypto: {
-    secret: secret,
-  },
-  touchAfter: 24 * 3600,
-});
-store.on("error", () => {
-  console.log("error in mongo session store", err);
-});
 
-const sessionOptions = {
-  store,
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-  },
-};
-app.use(session(sessionOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

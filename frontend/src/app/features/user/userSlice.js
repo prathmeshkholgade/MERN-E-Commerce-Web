@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const authUrl = import.meta.env.VITE_AUTH;
 const baseUrl = import.meta.env.VITE_BASEURL;
+
 export const logInUser = createAsyncThunk(
   "user/login",
   async (data, thunkAPI) => {
@@ -57,6 +58,7 @@ export const getUserData = createAsyncThunk(
       const res = await axios.get(`${authUrl}`, {
         withCredentials: true,
       });
+      console.log(res);
       return res.data.user;
     } catch (err) {
       console.log(err);
