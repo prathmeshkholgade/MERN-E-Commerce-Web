@@ -3,6 +3,10 @@ const express = require("express");
 const app = express();
 const database = require("./config/dataBase");
 const User = require("./models/userModel");
+const db_Url = process.env.ATLAS_URL;
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const secret = process.env.SECRET;
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productsRoutes");
 const reviewRoutes = require("./routes/ReviewRoutes");
@@ -22,6 +26,29 @@ const corsOptions = {
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
+const store = MongoStore.create({
+  mongoUrl: db_Url,
+  crypto: {
+    secret: secret,
+  },
+  touchAfter: 24 * 3600,
+});
+store.on("error", () => {
+  console.log("error in mongo session store", err);
+});
+
+const sessionOptions = {
+  store,
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  },
+};
+app.use(session(sessionOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

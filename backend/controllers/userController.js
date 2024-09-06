@@ -49,5 +49,6 @@ module.exports.logOut = (req, res) => {
   res.send("logout");
 };
 module.exports.getUser = (req, res) => {
+  console.log(req.user);
   res.status(200).json({ user: req.user });
 };
