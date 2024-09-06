@@ -14,6 +14,7 @@ const Razorpay = require("razorpay");
 const wrapAsync = require("./utils/wrapAsync");
 const crypto = require("crypto");
 const Order = require("./models/orderModel");
+const port = process.env.PORT || 8080;
 // const { default: items } = require("razorpay/dist/types/items");
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -142,6 +143,6 @@ app.use((err, req, res, next) => {
   res.status(status).send(message);
 });
 
-app.listen(8080, () => {
+app.listen(port, () => {
   console.log("server is listing to port 8080");
 });
