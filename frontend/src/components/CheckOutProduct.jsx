@@ -7,6 +7,7 @@ import { updateProductQuantity } from "../app/features/order/CheckOutSlice";
 export default function CheckOutProduct({ product }) {
   const [productQunatity, setproductQunatity] = useState(product?.quantity);
   const dispatch = useDispatch();
+  
   const increaseQunatity = () => {
     setproductQunatity((prevQ) => prevQ + 1);
     console.log(product.product._id);

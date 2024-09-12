@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 
 module.exports.registerUser = async (req, res, next) => {
   const { fullName, email, password, isAdmin } = req.body;
-  console.log(req.body);
   const alreadyUser = await User.findOne({ email: email });
   if (alreadyUser) return next(new ExpressError(500, "email is already exist"));
   bcrypt.genSalt(10, function (err, salt) {
@@ -15,7 +14,11 @@ module.exports.registerUser = async (req, res, next) => {
       try {
         const user = new User({ fullName, email, password: hash });
         const token = generateToken(user);
-        res.cookie("token", token);
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production", // true if using HTTPS
+          sameSite: "Lax", // or "Lax" depending on your requirement
+        });
         await user.save();
         const { password, ...userInfo } = user.toObject();
         res.status(200).json({ user: userInfo });
@@ -33,7 +36,11 @@ module.exports.loginUser = async (req, res, next) => {
   bcrypt.compare(password, user.password, function (err, result) {
     if (result) {
       const token = generateToken(user);
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // true if using HTTPS
+        sameSite: "Lax", // or "Lax" depending on your requirement
+      });
       const { password, ...userInfo } = user.toObject();
       req.user = userInfo;
       res.status(200).json({ user: userInfo });
