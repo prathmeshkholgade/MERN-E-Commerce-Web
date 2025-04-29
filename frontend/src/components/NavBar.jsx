@@ -52,7 +52,7 @@ export default function NavBar() {
         <div className="  md:hidden  text-end " onClick={toggle}>
           <i className="ri-menu-2-line"></i>
         </div>
-        <h2 className="md:text-lg ml-4 ">NewSamaratInterPrises</h2>
+        <h2 className="md:text-lg ml-4 ">E-commerce</h2>
       </div>
 
       <div

@@ -33,6 +33,6 @@ const addSellingPrice = async () => {
     await item.save();
   }
 
-  console.log("add selling price");
+  // console.log("add selling price");
 };
 addSellingPrice();

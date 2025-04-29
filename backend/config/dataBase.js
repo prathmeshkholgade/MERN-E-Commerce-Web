@@ -3,22 +3,11 @@ const db_Url = process.env.ATLAS_URL;
 main()
   .then(() => console.log("conneted database successfully"))
   .catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(db_Url);
 
-  // After connection, drop the 'username_1' index on the 'users' collection
-  try {
-    const db = mongoose.connection;
-    await db.collection("users").dropIndex("username_1"); // Drop the index
-    console.log("Dropped 'username_1' index successfully");
-  } catch (err) {
-    // Handle errors like the index not existing
-    if (err.code === 27) {
-      console.log("Index doesn't exist, no need to drop");
-    } else {
-      console.error("Error dropping index:", err.message);
-    }
-  }
+async function main() {
+  await mongoose.connect("mongodb://localhost:27017/newsamarat");
+
+  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
 // async function main() {
 //   await mongoose.connect(db_Url);

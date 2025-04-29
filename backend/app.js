@@ -21,12 +21,11 @@ const Order = require("./models/orderModel");
 const port = process.env.PORT || 8080;
 // const { default: items } = require("razorpay/dist/types/items");
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "http://localhost:5174",
   credentials: true,
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
